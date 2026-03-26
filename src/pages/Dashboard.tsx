@@ -62,7 +62,6 @@ const Dashboard = () => {
             <img src={logo} alt="Fonatica" className="w-7 h-7 invert" />
             <span className="font-bold" style={{ fontFamily: 'Space Grotesk' }}>Fonatica</span>
           </Link>
-          </Link>
           <div className="flex items-center gap-3">
             <span className="text-sm text-muted-foreground hidden sm:block">{user.email}</span>
             <Button variant="ghost" size="sm" onClick={handleLogout}>

@@ -28,7 +28,6 @@ const Index = () => {
             <img src={logo} alt="Fonatica" className="w-8 h-8 invert" />
             <span className="text-lg font-bold tracking-tight" style={{ fontFamily: 'Space Grotesk' }}>Fonatica</span>
           </Link>
-          </Link>
           <div className="flex items-center gap-3">
             {user ? (
               <Link to="/dashboard">
