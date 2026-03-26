@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Mail, Search, Users, Zap, Shield, Globe, ArrowRight, Check, Sparkles } from 'lucide-react';
+import { Mail, Search, Users, Zap, Shield, Globe, ArrowRight, Check } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import logo from '@/assets/logo.png';
 
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/8x228r9hRfo73B26C37Zu0c';
 
@@ -23,9 +24,7 @@ const Index = () => {
       <nav className="fixed top-0 w-full z-50 glass border-b border-border/50">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-primary" />
-            </div>
+            <img src={logo} alt="Fonatica" className="w-8 h-8 invert" />
             <span className="text-lg font-bold tracking-tight" style={{ fontFamily: 'Space Grotesk' }}>Fonatica</span>
           </Link>
           <div className="flex items-center gap-3">
@@ -158,7 +157,7 @@ const Index = () => {
       <footer className="border-t border-border/50 py-8 px-6">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-primary" />
+            <img src={logo} alt="Fonatica" className="w-5 h-5 invert" />
             <span>Fonatica</span>
           </div>
           <p>© {new Date().getFullYear()} Fonatica. All rights reserved.</p>

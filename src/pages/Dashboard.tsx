@@ -7,8 +7,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { toast } from 'sonner';
-import { Search, Building2, User, Lock, Sparkles, LogOut, ArrowRight, Mail, AlertTriangle } from 'lucide-react';
+import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import logo from '@/assets/logo.png';
 
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/8x228r9hRfo73B26C37Zu0c';
 
@@ -57,9 +58,7 @@ const Dashboard = () => {
       <nav className="border-b border-border/50 glass sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-primary/20 flex items-center justify-center">
-              <Sparkles className="w-3.5 h-3.5 text-primary" />
-            </div>
+            <img src={logo} alt="Fonatica" className="w-7 h-7 invert" />
             <span className="font-bold" style={{ fontFamily: 'Space Grotesk' }}>Fonatica</span>
           </Link>
           <div className="flex items-center gap-3">
