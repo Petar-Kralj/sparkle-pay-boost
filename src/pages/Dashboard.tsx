@@ -10,7 +10,6 @@ import { toast } from 'sonner';
 import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import logo from '@/assets/logo.png';
-import { motion } from 'framer-motion';
 
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/8x228r9hRfo73B26C37Zu0c';
 

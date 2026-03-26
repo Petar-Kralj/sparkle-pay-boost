@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Mail, Search, Users, Zap, Shield, Globe, ArrowRight, Check } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import logo from '@/assets/logo.png';
-import { useAuth } from '@/hooks/useAuth';
 
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/8x228r9hRfo73B26C37Zu0c';
 
