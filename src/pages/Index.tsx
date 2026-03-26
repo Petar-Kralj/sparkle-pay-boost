@@ -75,11 +75,11 @@ const Index = () => {
                 Subscribe Now — $125/mo <ArrowRight className="w-4 h-4" />
               </Button>
             </a>
-            <Link to="/signup">
-              <Button size="lg" variant="outline" className="text-base px-8">
-                Try Free Search
-              </Button>
-            </Link>
+          </motion.div>
+          <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={4}
+            className="mt-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border/50 glass text-sm text-muted-foreground">
+            <Zap className="w-4 h-4 text-accent" />
+            Coming soon: Free email verification tool with 99% accuracy — verify up to 100,000 emails monthly
           </motion.div>
         </div>
       </section>
