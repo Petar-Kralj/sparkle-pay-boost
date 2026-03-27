@@ -100,7 +100,7 @@ const Index = () => {
               { icon: Search, title: 'Business Email Finder', desc: 'Find verified business emails by company domain and employee name.' },
               { icon: Users, title: 'People Search', desc: 'Discover personal and professional emails for any individual.' },
               { icon: Mail, title: 'Email Verification', desc: 'Verify deliverability to keep your bounce rate low.' },
-              { icon: Globe, title: 'Domain Search', desc: 'Find all email addresses associated with any company domain.' },
+              { icon: Globe, title: 'Domain Search', desc: 'Find all email addresses associated with any company domain. Optionally filter to only scrape Shopify-powered websites.' },
               { icon: Shield, title: 'GDPR Compliant', desc: 'All data sourced and processed in compliance with privacy laws.' },
               { icon: Zap, title: 'API Access', desc: 'Integrate Fonatica into your workflow with our REST API.' },
             ].map((f, i) => (
