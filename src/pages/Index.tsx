@@ -33,14 +33,7 @@ const Index = () => {
                 <Button size="sm">Dashboard <ArrowRight className="w-3 h-3" /></Button>
               </Link>
             ) : (
-              <>
-                <Link to="/login">
-                  <Button variant="ghost" size="sm">Sign in</Button>
-                </Link>
-                <Link to="/signup">
-                  <Button size="sm">Get Started</Button>
-                </Link>
-              </>
+              <span className="text-sm text-muted-foreground">Coming back soon</span>
             )}
           </div>
         </div>
