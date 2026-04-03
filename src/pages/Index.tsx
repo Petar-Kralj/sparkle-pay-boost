@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Mail, Search, Users, Zap, Shield, Globe, ArrowRight, Check } from 'lucide-react';
+import { Mail, Search, Users, Zap, Shield, Globe, ArrowRight, Check, AlertTriangle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import logo from '@/assets/logo.png';
 
