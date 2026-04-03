@@ -136,11 +136,9 @@ const Index = () => {
                 </li>
               ))}
             </ul>
-            <a href={STRIPE_PAYMENT_LINK} target="_blank" rel="noopener noreferrer" className="block">
-              <Button className="w-full text-base" size="lg">
-                Get Started <ArrowRight className="w-4 h-4" />
-              </Button>
-            </a>
+            <div className="w-full text-center text-sm text-muted-foreground py-3 rounded-lg border border-destructive/30 bg-destructive/5">
+              Subscriptions temporarily unavailable
+            </div>
           </motion.div>
         </div>
       </section>
