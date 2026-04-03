@@ -5,9 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Dashboard from "./pages/Dashboard";
+import Maintenance from "./pages/Maintenance";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
