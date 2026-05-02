@@ -6,8 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle } from 'lucide-react';
+import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle, ShieldCheck, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import logo from '@/assets/logo.png';
 
@@ -22,7 +23,10 @@ const Dashboard = () => {
   const [businessName, setBusinessName] = useState('');
   const [personName, setPersonName] = useState('');
   const [personCompany, setPersonCompany] = useState('');
-  const [results, setResults] = useState<string | null>(null);
+  const [verifyEmail, setVerifyEmail] = useState('');
+  const [results, setResults] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (authLoading || subLoading) {
     return (
@@ -37,14 +41,46 @@ const Dashboard = () => {
     return null;
   }
 
-  const handleSearch = (type: string) => {
+  const callFn = async (name: string, body: any) => {
     if (!isActive) {
       toast.error('You need an active subscription to search.');
       return;
     }
-    // Placeholder search logic
-    toast.success(`Searching for ${type} emails...`);
-    setResults(`Results for your ${type} search will appear here. Connect your email finder API to get real results.`);
+    setLoading(true);
+    setError(null);
+    setResults(null);
+    try {
+      const { data, error } = await supabase.functions.invoke(name, { body });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setResults({ type: name, data });
+    } catch (e: any) {
+      setError(e?.message || 'Something went wrong');
+      toast.error(e?.message || 'Search failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBusinessSearch = () => {
+    if (!businessDomain) return toast.error('Enter a company domain');
+    if (businessName) {
+      const [first, ...rest] = businessName.trim().split(' ');
+      callFn('hunter-email-finder', { domain: businessDomain, firstName: first, lastName: rest.join(' ') || first });
+    } else {
+      callFn('hunter-domain-search', { domain: businessDomain });
+    }
+  };
+
+  const handlePeopleSearch = () => {
+    if (!personName || !personCompany) return toast.error('Enter a name and company');
+    const [first, ...rest] = personName.trim().split(' ');
+    callFn('hunter-email-finder', { company: personCompany, firstName: first, lastName: rest.join(' ') || first });
+  };
+
+  const handleVerify = () => {
+    if (!verifyEmail) return toast.error('Enter an email to verify');
+    callFn('hunter-email-verify', { email: verifyEmail });
   };
 
   const handleLogout = async () => {
@@ -99,6 +135,7 @@ const Dashboard = () => {
           <TabsList className="bg-card border border-border/50">
             <TabsTrigger value="business" className="gap-2"><Building2 className="w-4 h-4" /> Business</TabsTrigger>
             <TabsTrigger value="people" className="gap-2"><User className="w-4 h-4" /> People</TabsTrigger>
+            <TabsTrigger value="verify" className="gap-2"><ShieldCheck className="w-4 h-4" /> Verify</TabsTrigger>
           </TabsList>
 
           <TabsContent value="business">
@@ -112,12 +149,12 @@ const Dashboard = () => {
                   <Input placeholder="example.com" value={businessDomain} onChange={e => setBusinessDomain(e.target.value)} className="bg-muted" />
                 </div>
                 <div className="space-y-2">
-                  <Label>Employee Name</Label>
+                  <Label>Employee Name (optional)</Label>
                   <Input placeholder="John Doe" value={businessName} onChange={e => setBusinessName(e.target.value)} className="bg-muted" />
                 </div>
               </div>
-              <Button onClick={() => handleSearch('business')} className="w-full sm:w-auto" disabled={!isActive}>
-                <Search className="w-4 h-4" /> Find Email
+              <Button onClick={handleBusinessSearch} className="w-full sm:w-auto" disabled={!isActive || loading}>
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />} Find Email
               </Button>
             </div>
           </TabsContent>
@@ -133,26 +170,90 @@ const Dashboard = () => {
                   <Input placeholder="Jane Smith" value={personName} onChange={e => setPersonName(e.target.value)} className="bg-muted" />
                 </div>
                 <div className="space-y-2">
-                  <Label>Company (optional)</Label>
+                  <Label>Company</Label>
                   <Input placeholder="Acme Inc." value={personCompany} onChange={e => setPersonCompany(e.target.value)} className="bg-muted" />
                 </div>
               </div>
-              <Button onClick={() => handleSearch('people')} className="w-full sm:w-auto" disabled={!isActive}>
-                <Search className="w-4 h-4" /> Find Email
+              <Button onClick={handlePeopleSearch} className="w-full sm:w-auto" disabled={!isActive || loading}>
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />} Find Email
+              </Button>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="verify">
+            <div className="p-6 rounded-2xl bg-card border border-border/50 space-y-4 relative">
+              {!isActive && <div className="absolute inset-0 rounded-2xl bg-background/60 backdrop-blur-sm z-10 flex items-center justify-center">
+                <Lock className="w-6 h-6 text-muted-foreground" />
+              </div>}
+              <div className="space-y-2">
+                <Label>Email Address</Label>
+                <Input placeholder="hello@example.com" value={verifyEmail} onChange={e => setVerifyEmail(e.target.value)} className="bg-muted" />
+              </div>
+              <Button onClick={handleVerify} className="w-full sm:w-auto" disabled={!isActive || loading}>
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />} Verify Email
               </Button>
             </div>
           </TabsContent>
         </Tabs>
 
         {/* Results */}
-        {results && (
+        {error && (
+          <div className="mt-6 p-4 rounded-2xl border border-destructive/30 bg-destructive/5 text-sm text-destructive flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4" /> {error}
+          </div>
+        )}
+        {results && !error && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className="mt-6 p-6 rounded-2xl bg-card border border-border/50">
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-2 mb-4">
               <Mail className="w-4 h-4 text-accent" />
               <h3 className="font-semibold">Results</h3>
             </div>
-            <p className="text-sm text-muted-foreground">{results}</p>
+            {results.type === 'hunter-domain-search' && (
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">{results.data.organization || results.data.domain}</p>
+                {(results.data.emails ?? []).length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No emails found.</p>
+                ) : (
+                  <ul className="divide-y divide-border/50">
+                    {results.data.emails.map((e: any, i: number) => (
+                      <li key={i} className="py-3 flex items-center justify-between gap-4">
+                        <div>
+                          <p className="text-sm font-medium">{e.email}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {[e.firstName, e.lastName].filter(Boolean).join(' ')}{e.position ? ` · ${e.position}` : ''}
+                          </p>
+                        </div>
+                        {typeof e.confidence === 'number' && (
+                          <span className="text-xs text-accent">{e.confidence}%</span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+            {results.type === 'hunter-email-finder' && (
+              results.data.email ? (
+                <div>
+                  <p className="text-lg font-medium">{results.data.email}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {[results.data.firstName, results.data.lastName].filter(Boolean).join(' ')}
+                    {results.data.position ? ` · ${results.data.position}` : ''}
+                    {typeof results.data.confidence === 'number' ? ` · ${results.data.confidence}% confidence` : ''}
+                  </p>
+                </div>
+              ) : <p className="text-sm text-muted-foreground">No match found.</p>
+            )}
+            {results.type === 'hunter-email-verify' && (
+              <div>
+                <p className="text-lg font-medium">{results.data.email}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Status: {results.data.status} · {results.data.deliverable ? 'Deliverable' : 'Not deliverable'}
+                  {typeof results.data.confidence === 'number' ? ` · ${results.data.confidence}%` : ''}
+                </p>
+              </div>
+            )}
           </motion.div>
         )}
       </div>

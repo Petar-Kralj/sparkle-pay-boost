@@ -5,7 +5,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/useAuth";
 import Index from "./pages/Index";
-import Maintenance from "./pages/Maintenance";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -19,9 +21,9 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
-            <Route path="/login" element={<Maintenance />} />
-            <Route path="/signup" element={<Maintenance />} />
-            <Route path="/dashboard" element={<Maintenance />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
