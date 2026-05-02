@@ -33,7 +33,14 @@ const Index = () => {
                 <Button size="sm">Dashboard <ArrowRight className="w-3 h-3" /></Button>
               </Link>
             ) : (
-              <span className="text-sm text-muted-foreground">Coming back soon</span>
+              <>
+                <Link to="/login">
+                  <Button variant="ghost" size="sm">Sign in</Button>
+                </Link>
+                <Link to="/signup">
+                  <Button size="sm">Get Started <ArrowRight className="w-3 h-3" /></Button>
+                </Link>
+              </>
             )}
           </div>
         </div>
@@ -62,10 +69,12 @@ const Index = () => {
           </motion.p>
           <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={3}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <div className="px-6 py-3 rounded-xl border border-destructive/30 bg-destructive/5 text-sm text-muted-foreground flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-destructive" />
-              Sign-ups and subscriptions are temporarily unavailable. We'll be back soon!
-            </div>
+            <a href={STRIPE_PAYMENT_LINK} target="_blank" rel="noopener noreferrer">
+              <Button size="lg">Subscribe Now <ArrowRight className="w-4 h-4" /></Button>
+            </a>
+            <Link to="/signup">
+              <Button size="lg" variant="outline">Create account</Button>
+            </Link>
           </motion.div>
           <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={4}
             className="mt-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border/50 glass text-sm text-muted-foreground">
@@ -136,9 +145,9 @@ const Index = () => {
                 </li>
               ))}
             </ul>
-            <div className="w-full text-center text-sm text-muted-foreground py-3 rounded-lg border border-destructive/30 bg-destructive/5">
-              Subscriptions temporarily unavailable
-            </div>
+            <a href={STRIPE_PAYMENT_LINK} target="_blank" rel="noopener noreferrer" className="block">
+              <Button className="w-full" size="lg">Subscribe Now <ArrowRight className="w-4 h-4" /></Button>
+            </a>
           </motion.div>
         </div>
       </section>
