@@ -6,8 +6,9 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle } from 'lucide-react';
+import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle, ShieldCheck, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import logo from '@/assets/logo.png';
 
@@ -22,7 +23,10 @@ const Dashboard = () => {
   const [businessName, setBusinessName] = useState('');
   const [personName, setPersonName] = useState('');
   const [personCompany, setPersonCompany] = useState('');
-  const [results, setResults] = useState<string | null>(null);
+  const [verifyEmail, setVerifyEmail] = useState('');
+  const [results, setResults] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (authLoading || subLoading) {
     return (
@@ -37,14 +41,46 @@ const Dashboard = () => {
     return null;
   }
 
-  const handleSearch = (type: string) => {
+  const callFn = async (name: string, body: any) => {
     if (!isActive) {
       toast.error('You need an active subscription to search.');
       return;
     }
-    // Placeholder search logic
-    toast.success(`Searching for ${type} emails...`);
-    setResults(`Results for your ${type} search will appear here. Connect your email finder API to get real results.`);
+    setLoading(true);
+    setError(null);
+    setResults(null);
+    try {
+      const { data, error } = await supabase.functions.invoke(name, { body });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      setResults({ type: name, data });
+    } catch (e: any) {
+      setError(e?.message || 'Something went wrong');
+      toast.error(e?.message || 'Search failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleBusinessSearch = () => {
+    if (!businessDomain) return toast.error('Enter a company domain');
+    if (businessName) {
+      const [first, ...rest] = businessName.trim().split(' ');
+      callFn('hunter-email-finder', { domain: businessDomain, firstName: first, lastName: rest.join(' ') || first });
+    } else {
+      callFn('hunter-domain-search', { domain: businessDomain });
+    }
+  };
+
+  const handlePeopleSearch = () => {
+    if (!personName || !personCompany) return toast.error('Enter a name and company');
+    const [first, ...rest] = personName.trim().split(' ');
+    callFn('hunter-email-finder', { company: personCompany, firstName: first, lastName: rest.join(' ') || first });
+  };
+
+  const handleVerify = () => {
+    if (!verifyEmail) return toast.error('Enter an email to verify');
+    callFn('hunter-email-verify', { email: verifyEmail });
   };
 
   const handleLogout = async () => {
