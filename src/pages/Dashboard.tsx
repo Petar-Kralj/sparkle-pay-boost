@@ -9,7 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle, ShieldCheck, Loader2, ListChecks } from 'lucide-react';
+import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle, ShieldCheck, Loader2, ListChecks, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import logo from '@/assets/logo.png';
 
@@ -98,6 +98,28 @@ const Dashboard = () => {
   const handleLogout = async () => {
     await signOut();
     navigate('/');
+  };
+
+  const handleExportCsv = () => {
+    const rows = results?.data?.results;
+    if (!Array.isArray(rows) || rows.length === 0) return toast.error('No results to export');
+    const escape = (v: any) => {
+      const s = v === null || v === undefined ? '' : String(v);
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const header = ['email', 'status', 'deliverable', 'confidence', 'error'];
+    const csv = [header.join(',')]
+      .concat(rows.map((r: any) => [r.email, r.status ?? '', r.deliverable ?? '', r.confidence ?? '', r.error ?? ''].map(escape).join(',')))
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `bulk-verify-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -289,6 +311,12 @@ const Dashboard = () => {
               </div>
             )}
             {results.type === 'hunter-email-verify' && Array.isArray(results.data.results) && (
+              <>
+                <div className="flex justify-end mb-3">
+                  <Button size="sm" variant="outline" onClick={handleExportCsv}>
+                    <Download className="w-4 h-4" /> Export CSV
+                  </Button>
+                </div>
               <ul className="divide-y divide-border/50">
                 {results.data.results.map((r: any, i: number) => (
                   <li key={i} className="py-3 flex items-center justify-between gap-4">
@@ -304,6 +332,7 @@ const Dashboard = () => {
                   </li>
                 ))}
               </ul>
+              </>
             )}
           </motion.div>
         )}
