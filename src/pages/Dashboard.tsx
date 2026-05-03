@@ -9,7 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle, ShieldCheck, Loader2, ListChecks } from 'lucide-react';
+import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle, ShieldCheck, Loader2, ListChecks, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 import logo from '@/assets/logo.png';
 
