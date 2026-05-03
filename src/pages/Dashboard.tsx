@@ -3,12 +3,13 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle, ShieldCheck, Loader2 } from 'lucide-react';
+import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle, ShieldCheck, Loader2, ListChecks } from 'lucide-react';
 import { motion } from 'framer-motion';
 import logo from '@/assets/logo.png';
 
@@ -24,6 +25,7 @@ const Dashboard = () => {
   const [personName, setPersonName] = useState('');
   const [personCompany, setPersonCompany] = useState('');
   const [verifyEmail, setVerifyEmail] = useState('');
+  const [bulkEmails, setBulkEmails] = useState('');
   const [results, setResults] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -83,6 +85,16 @@ const Dashboard = () => {
     callFn('hunter-email-verify', { email: verifyEmail });
   };
 
+  const handleBulkVerify = () => {
+    const emails = bulkEmails
+      .split(/[\s,;\n]+/)
+      .map((e) => e.trim())
+      .filter(Boolean);
+    if (emails.length === 0) return toast.error('Paste at least one email');
+    if (emails.length > 100) return toast.error('Max 100 emails per batch');
+    callFn('hunter-email-verify', { emails });
+  };
+
   const handleLogout = async () => {
     await signOut();
     navigate('/');
@@ -136,6 +148,7 @@ const Dashboard = () => {
             <TabsTrigger value="business" className="gap-2"><Building2 className="w-4 h-4" /> Business</TabsTrigger>
             <TabsTrigger value="people" className="gap-2"><User className="w-4 h-4" /> People</TabsTrigger>
             <TabsTrigger value="verify" className="gap-2"><ShieldCheck className="w-4 h-4" /> Verify</TabsTrigger>
+            <TabsTrigger value="bulk" className="gap-2"><ListChecks className="w-4 h-4" /> Bulk Verify</TabsTrigger>
           </TabsList>
 
           <TabsContent value="business">
@@ -194,6 +207,27 @@ const Dashboard = () => {
               </Button>
             </div>
           </TabsContent>
+
+          <TabsContent value="bulk">
+            <div className="p-6 rounded-2xl bg-card border border-border/50 space-y-4 relative">
+              {!isActive && <div className="absolute inset-0 rounded-2xl bg-background/60 backdrop-blur-sm z-10 flex items-center justify-center">
+                <Lock className="w-6 h-6 text-muted-foreground" />
+              </div>}
+              <div className="space-y-2">
+                <Label>Email Addresses</Label>
+                <Textarea
+                  placeholder={"Paste up to 100 emails — one per line, or separated by commas"}
+                  value={bulkEmails}
+                  onChange={e => setBulkEmails(e.target.value)}
+                  className="bg-muted min-h-[160px] font-mono text-sm"
+                />
+                <p className="text-xs text-muted-foreground">Max 100 emails per batch.</p>
+              </div>
+              <Button onClick={handleBulkVerify} className="w-full sm:w-auto" disabled={!isActive || loading}>
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ListChecks className="w-4 h-4" />} Verify All
+              </Button>
+            </div>
+          </TabsContent>
         </Tabs>
 
         {/* Results */}
@@ -245,7 +279,7 @@ const Dashboard = () => {
                 </div>
               ) : <p className="text-sm text-muted-foreground">No match found.</p>
             )}
-            {results.type === 'hunter-email-verify' && (
+            {results.type === 'hunter-email-verify' && !results.data.results && (
               <div>
                 <p className="text-lg font-medium">{results.data.email}</p>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -253,6 +287,23 @@ const Dashboard = () => {
                   {typeof results.data.confidence === 'number' ? ` · ${results.data.confidence}%` : ''}
                 </p>
               </div>
+            )}
+            {results.type === 'hunter-email-verify' && Array.isArray(results.data.results) && (
+              <ul className="divide-y divide-border/50">
+                {results.data.results.map((r: any, i: number) => (
+                  <li key={i} className="py-3 flex items-center justify-between gap-4">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">{r.email}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {r.error ? `Error: ${r.error}` : `${r.status ?? 'unknown'} · ${r.deliverable ? 'Deliverable' : 'Not deliverable'}`}
+                      </p>
+                    </div>
+                    {typeof r.confidence === 'number' && (
+                      <span className="text-xs text-accent">{r.confidence}%</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
             )}
           </motion.div>
         )}
