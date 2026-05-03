@@ -207,6 +207,27 @@ const Dashboard = () => {
               </Button>
             </div>
           </TabsContent>
+
+          <TabsContent value="bulk">
+            <div className="p-6 rounded-2xl bg-card border border-border/50 space-y-4 relative">
+              {!isActive && <div className="absolute inset-0 rounded-2xl bg-background/60 backdrop-blur-sm z-10 flex items-center justify-center">
+                <Lock className="w-6 h-6 text-muted-foreground" />
+              </div>}
+              <div className="space-y-2">
+                <Label>Email Addresses</Label>
+                <Textarea
+                  placeholder={"Paste up to 100 emails — one per line, or separated by commas"}
+                  value={bulkEmails}
+                  onChange={e => setBulkEmails(e.target.value)}
+                  className="bg-muted min-h-[160px] font-mono text-sm"
+                />
+                <p className="text-xs text-muted-foreground">Max 100 emails per batch.</p>
+              </div>
+              <Button onClick={handleBulkVerify} className="w-full sm:w-auto" disabled={!isActive || loading}>
+                {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ListChecks className="w-4 h-4" />} Verify All
+              </Button>
+            </div>
+          </TabsContent>
         </Tabs>
 
         {/* Results */}
