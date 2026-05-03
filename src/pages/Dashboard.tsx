@@ -311,6 +311,12 @@ const Dashboard = () => {
               </div>
             )}
             {results.type === 'hunter-email-verify' && Array.isArray(results.data.results) && (
+              <>
+                <div className="flex justify-end mb-3">
+                  <Button size="sm" variant="outline" onClick={handleExportCsv}>
+                    <Download className="w-4 h-4" /> Export CSV
+                  </Button>
+                </div>
               <ul className="divide-y divide-border/50">
                 {results.data.results.map((r: any, i: number) => (
                   <li key={i} className="py-3 flex items-center justify-between gap-4">
