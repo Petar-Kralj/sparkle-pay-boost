@@ -84,6 +84,16 @@ const Dashboard = () => {
     callFn('hunter-email-verify', { email: verifyEmail });
   };
 
+  const handleBulkVerify = () => {
+    const emails = bulkEmails
+      .split(/[\s,;\n]+/)
+      .map((e) => e.trim())
+      .filter(Boolean);
+    if (emails.length === 0) return toast.error('Paste at least one email');
+    if (emails.length > 100) return toast.error('Max 100 emails per batch');
+    callFn('hunter-email-verify', { emails });
+  };
+
   const handleLogout = async () => {
     await signOut();
     navigate('/');
