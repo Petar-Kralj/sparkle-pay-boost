@@ -332,6 +332,7 @@ const Dashboard = () => {
                   </li>
                 ))}
               </ul>
+              </>
             )}
           </motion.div>
         )}
