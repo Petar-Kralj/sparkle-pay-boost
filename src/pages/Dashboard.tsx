@@ -24,6 +24,7 @@ const Dashboard = () => {
   const [personName, setPersonName] = useState('');
   const [personCompany, setPersonCompany] = useState('');
   const [verifyEmail, setVerifyEmail] = useState('');
+  const [bulkEmails, setBulkEmails] = useState('');
   const [results, setResults] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
