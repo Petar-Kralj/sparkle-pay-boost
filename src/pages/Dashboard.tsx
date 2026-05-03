@@ -100,6 +100,28 @@ const Dashboard = () => {
     navigate('/');
   };
 
+  const handleExportCsv = () => {
+    const rows = results?.data?.results;
+    if (!Array.isArray(rows) || rows.length === 0) return toast.error('No results to export');
+    const escape = (v: any) => {
+      const s = v === null || v === undefined ? '' : String(v);
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const header = ['email', 'status', 'deliverable', 'confidence', 'error'];
+    const csv = [header.join(',')]
+      .concat(rows.map((r: any) => [r.email, r.status ?? '', r.deliverable ?? '', r.confidence ?? '', r.error ?? ''].map(escape).join(',')))
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `bulk-verify-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Nav */}
