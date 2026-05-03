@@ -279,7 +279,7 @@ const Dashboard = () => {
                 </div>
               ) : <p className="text-sm text-muted-foreground">No match found.</p>
             )}
-            {results.type === 'hunter-email-verify' && (
+            {results.type === 'hunter-email-verify' && !results.data.results && (
               <div>
                 <p className="text-lg font-medium">{results.data.email}</p>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -287,6 +287,23 @@ const Dashboard = () => {
                   {typeof results.data.confidence === 'number' ? ` · ${results.data.confidence}%` : ''}
                 </p>
               </div>
+            )}
+            {results.type === 'hunter-email-verify' && Array.isArray(results.data.results) && (
+              <ul className="divide-y divide-border/50">
+                {results.data.results.map((r: any, i: number) => (
+                  <li key={i} className="py-3 flex items-center justify-between gap-4">
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">{r.email}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {r.error ? `Error: ${r.error}` : `${r.status ?? 'unknown'} · ${r.deliverable ? 'Deliverable' : 'Not deliverable'}`}
+                      </p>
+                    </div>
+                    {typeof r.confidence === 'number' && (
+                      <span className="text-xs text-accent">{r.confidence}%</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
             )}
           </motion.div>
         )}
