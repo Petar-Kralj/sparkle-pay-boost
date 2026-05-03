@@ -14,19 +14,27 @@ export const useSubscription = () => {
       return;
     }
 
-    const checkSubscription = async () => {
-      const { data } = await supabase
-        .from('subscriptions')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('status', 'active')
-        .maybeSingle();
+    const check = async () => {
+      const [{ data: sub }, { data: role }] = await Promise.all([
+        supabase
+          .from('subscriptions')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('status', 'active')
+          .maybeSingle(),
+        supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id)
+          .eq('role', 'admin')
+          .maybeSingle(),
+      ]);
 
-      setIsActive(!!data);
+      setIsActive(!!sub || !!role);
       setLoading(false);
     };
 
-    checkSubscription();
+    check();
   }, [user]);
 
   return { isActive, loading };
