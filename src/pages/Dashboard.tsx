@@ -148,6 +148,7 @@ const Dashboard = () => {
             <TabsTrigger value="business" className="gap-2"><Building2 className="w-4 h-4" /> Business</TabsTrigger>
             <TabsTrigger value="people" className="gap-2"><User className="w-4 h-4" /> People</TabsTrigger>
             <TabsTrigger value="verify" className="gap-2"><ShieldCheck className="w-4 h-4" /> Verify</TabsTrigger>
+            <TabsTrigger value="bulk" className="gap-2"><ListChecks className="w-4 h-4" /> Bulk Verify</TabsTrigger>
           </TabsList>
 
           <TabsContent value="business">
