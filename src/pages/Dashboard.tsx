@@ -77,14 +77,26 @@ const Dashboard = () => {
       const [first, ...rest] = businessName.trim().split(' ');
       callFn('hunter-email-finder', { domain: businessDomain, firstName: first, lastName: rest.join(' ') || first });
     } else {
-      callFn('hunter-domain-search', { domain: businessDomain });
+      callFn('hunter-domain-search', {
+        domain: businessDomain,
+        department: bizDepartments,
+        seniority: bizSeniorities,
+      });
     }
   };
 
   const handlePeopleSearch = () => {
-    if (!personName || !personCompany) return toast.error('Enter a name and company');
-    const [first, ...rest] = personName.trim().split(' ');
-    callFn('hunter-email-finder', { company: personCompany, firstName: first, lastName: rest.join(' ') || first });
+    if (!personCompany) return toast.error('Enter a company');
+    if (personName) {
+      const [first, ...rest] = personName.trim().split(' ');
+      callFn('hunter-email-finder', { company: personCompany, firstName: first, lastName: rest.join(' ') || first });
+    } else {
+      callFn('hunter-domain-search', {
+        company: personCompany,
+        department: peopleDepartments,
+        seniority: peopleSeniorities,
+      });
+    }
   };
 
   const handleVerify = () => {
