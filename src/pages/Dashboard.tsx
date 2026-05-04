@@ -16,6 +16,47 @@ import logo from '@/assets/logo.png';
 const DEPARTMENTS = ['executive','it','finance','management','sales','marketing','hr','support','communication','legal'];
 const SENIORITIES = ['junior','senior','executive'];
 
+function FilterChips({ label, options, selected, onChange, disabled }: {
+  label: string; options: string[]; selected: string[]; onChange: (v: string[]) => void; disabled?: boolean;
+}) {
+  const toggle = (opt: string) => {
+    if (disabled) return;
+    onChange(selected.includes(opt) ? selected.filter(o => o !== opt) : [...selected, opt]);
+  };
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <Label className="flex items-center gap-1.5"><Filter className="w-3.5 h-3.5" /> {label}</Label>
+        {selected.length > 0 && (
+          <button type="button" onClick={() => onChange([])} className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+            <X className="w-3 h-3" /> Clear
+          </button>
+        )}
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {options.map(opt => {
+          const active = selected.includes(opt);
+          return (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => toggle(opt)}
+              disabled={disabled}
+              className={`px-2.5 py-1 rounded-full text-xs border transition-colors capitalize ${
+                active
+                  ? 'bg-foreground text-background border-foreground'
+                  : 'bg-muted text-muted-foreground border-border/50 hover:text-foreground'
+              }`}
+            >
+              {opt}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/8x228r9hRfo73B26C37Zu0c';
 
 const Dashboard = () => {
