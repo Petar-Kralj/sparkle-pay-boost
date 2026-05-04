@@ -47,6 +47,8 @@ Deno.serve(async (req) => {
         firstName: e.first_name,
         lastName: e.last_name,
         position: e.position,
+        department: e.department,
+        seniority: e.seniority,
         confidence: e.confidence,
       })),
     };
