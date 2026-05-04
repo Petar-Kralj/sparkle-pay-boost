@@ -9,9 +9,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle, ShieldCheck, Loader2, ListChecks, Download } from 'lucide-react';
+import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle, ShieldCheck, Loader2, ListChecks, Download, Filter, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import logo from '@/assets/logo.png';
+
+const DEPARTMENTS = ['executive','it','finance','management','sales','marketing','hr','support','communication','legal'];
+const SENIORITIES = ['junior','senior','executive'];
 
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/8x228r9hRfo73B26C37Zu0c';
 
@@ -26,6 +29,10 @@ const Dashboard = () => {
   const [personCompany, setPersonCompany] = useState('');
   const [verifyEmail, setVerifyEmail] = useState('');
   const [bulkEmails, setBulkEmails] = useState('');
+  const [bizDepartments, setBizDepartments] = useState<string[]>([]);
+  const [bizSeniorities, setBizSeniorities] = useState<string[]>([]);
+  const [peopleDepartments, setPeopleDepartments] = useState<string[]>([]);
+  const [peopleSeniorities, setPeopleSeniorities] = useState<string[]>([]);
   const [results, setResults] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
