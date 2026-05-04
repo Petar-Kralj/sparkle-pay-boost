@@ -184,7 +184,6 @@ const Dashboard = () => {
         <h1 className="text-3xl font-bold mb-2" style={{ fontFamily: 'Space Grotesk' }}>Email Finder</h1>
         <p className="text-muted-foreground mb-8">Find verified email addresses for businesses and people.</p>
 
-        {(() => null)()}
         <Tabs defaultValue="business" className="space-y-6">
           <TabsList className="bg-card border border-border/50">
             <TabsTrigger value="business" className="gap-2"><Building2 className="w-4 h-4" /> Business</TabsTrigger>
