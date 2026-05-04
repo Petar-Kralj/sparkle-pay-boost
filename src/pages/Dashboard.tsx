@@ -248,6 +248,11 @@ const Dashboard = () => {
                   <Input placeholder="John Doe" value={businessName} onChange={e => setBusinessName(e.target.value)} className="bg-muted" />
                 </div>
               </div>
+              <div className="pt-2 border-t border-border/40 grid sm:grid-cols-2 gap-4">
+                <FilterChips label="Department" options={DEPARTMENTS} selected={bizDepartments} onChange={setBizDepartments} disabled={!isActive} />
+                <FilterChips label="Seniority" options={SENIORITIES} selected={bizSeniorities} onChange={setBizSeniorities} disabled={!isActive} />
+              </div>
+              <p className="text-xs text-muted-foreground">Filters apply when no employee name is set.</p>
               <Button onClick={handleBusinessSearch} className="w-full sm:w-auto" disabled={!isActive || loading}>
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />} Find Email
               </Button>
@@ -269,6 +274,11 @@ const Dashboard = () => {
                   <Input placeholder="Acme Inc." value={personCompany} onChange={e => setPersonCompany(e.target.value)} className="bg-muted" />
                 </div>
               </div>
+              <div className="pt-2 border-t border-border/40 grid sm:grid-cols-2 gap-4">
+                <FilterChips label="Department" options={DEPARTMENTS} selected={peopleDepartments} onChange={setPeopleDepartments} disabled={!isActive} />
+                <FilterChips label="Seniority" options={SENIORITIES} selected={peopleSeniorities} onChange={setPeopleSeniorities} disabled={!isActive} />
+              </div>
+              <p className="text-xs text-muted-foreground">Leave name empty to browse a company by filters.</p>
               <Button onClick={handlePeopleSearch} className="w-full sm:w-auto" disabled={!isActive || loading}>
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />} Find Email
               </Button>
