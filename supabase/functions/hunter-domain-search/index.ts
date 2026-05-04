@@ -4,7 +4,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const { domain, company, limit } = await req.json();
+    const { domain, company, limit, department, seniority } = await req.json();
     if (!domain && !company) {
       return new Response(JSON.stringify({ error: "domain or company is required" }), {
         status: 400,
@@ -23,6 +23,10 @@ Deno.serve(async (req) => {
     const params = new URLSearchParams({ api_key: apiKey, limit: String(limit ?? 10) });
     if (domain) params.set("domain", domain);
     if (company) params.set("company", company);
+    const depts = Array.isArray(department) ? department.join(",") : department;
+    const senrs = Array.isArray(seniority) ? seniority.join(",") : seniority;
+    if (depts) params.set("department", depts);
+    if (senrs) params.set("seniority", senrs);
 
     const r = await fetch(`https://api.hunter.io/v2/domain-search?${params}`);
     const json = await r.json();
@@ -43,6 +47,8 @@ Deno.serve(async (req) => {
         firstName: e.first_name,
         lastName: e.last_name,
         position: e.position,
+        department: e.department,
+        seniority: e.seniority,
         confidence: e.confidence,
       })),
     };

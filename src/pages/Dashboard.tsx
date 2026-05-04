@@ -9,9 +9,53 @@ import { useAuth } from '@/hooks/useAuth';
 import { useSubscription } from '@/hooks/useSubscription';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle, ShieldCheck, Loader2, ListChecks, Download } from 'lucide-react';
+import { Search, Building2, User, Lock, LogOut, ArrowRight, Mail, AlertTriangle, ShieldCheck, Loader2, ListChecks, Download, Filter, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 import logo from '@/assets/logo.png';
+
+const DEPARTMENTS = ['executive','it','finance','management','sales','marketing','hr','support','communication','legal'];
+const SENIORITIES = ['junior','senior','executive'];
+
+function FilterChips({ label, options, selected, onChange, disabled }: {
+  label: string; options: string[]; selected: string[]; onChange: (v: string[]) => void; disabled?: boolean;
+}) {
+  const toggle = (opt: string) => {
+    if (disabled) return;
+    onChange(selected.includes(opt) ? selected.filter(o => o !== opt) : [...selected, opt]);
+  };
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <Label className="flex items-center gap-1.5"><Filter className="w-3.5 h-3.5" /> {label}</Label>
+        {selected.length > 0 && (
+          <button type="button" onClick={() => onChange([])} className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
+            <X className="w-3 h-3" /> Clear
+          </button>
+        )}
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {options.map(opt => {
+          const active = selected.includes(opt);
+          return (
+            <button
+              key={opt}
+              type="button"
+              onClick={() => toggle(opt)}
+              disabled={disabled}
+              className={`px-2.5 py-1 rounded-full text-xs border transition-colors capitalize ${
+                active
+                  ? 'bg-foreground text-background border-foreground'
+                  : 'bg-muted text-muted-foreground border-border/50 hover:text-foreground'
+              }`}
+            >
+              {opt}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/8x228r9hRfo73B26C37Zu0c';
 
@@ -26,6 +70,10 @@ const Dashboard = () => {
   const [personCompany, setPersonCompany] = useState('');
   const [verifyEmail, setVerifyEmail] = useState('');
   const [bulkEmails, setBulkEmails] = useState('');
+  const [bizDepartments, setBizDepartments] = useState<string[]>([]);
+  const [bizSeniorities, setBizSeniorities] = useState<string[]>([]);
+  const [peopleDepartments, setPeopleDepartments] = useState<string[]>([]);
+  const [peopleSeniorities, setPeopleSeniorities] = useState<string[]>([]);
   const [results, setResults] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,14 +118,26 @@ const Dashboard = () => {
       const [first, ...rest] = businessName.trim().split(' ');
       callFn('hunter-email-finder', { domain: businessDomain, firstName: first, lastName: rest.join(' ') || first });
     } else {
-      callFn('hunter-domain-search', { domain: businessDomain });
+      callFn('hunter-domain-search', {
+        domain: businessDomain,
+        department: bizDepartments,
+        seniority: bizSeniorities,
+      });
     }
   };
 
   const handlePeopleSearch = () => {
-    if (!personName || !personCompany) return toast.error('Enter a name and company');
-    const [first, ...rest] = personName.trim().split(' ');
-    callFn('hunter-email-finder', { company: personCompany, firstName: first, lastName: rest.join(' ') || first });
+    if (!personCompany) return toast.error('Enter a company');
+    if (personName) {
+      const [first, ...rest] = personName.trim().split(' ');
+      callFn('hunter-email-finder', { company: personCompany, firstName: first, lastName: rest.join(' ') || first });
+    } else {
+      callFn('hunter-domain-search', {
+        company: personCompany,
+        department: peopleDepartments,
+        seniority: peopleSeniorities,
+      });
+    }
   };
 
   const handleVerify = () => {
@@ -188,6 +248,11 @@ const Dashboard = () => {
                   <Input placeholder="John Doe" value={businessName} onChange={e => setBusinessName(e.target.value)} className="bg-muted" />
                 </div>
               </div>
+              <div className="pt-2 border-t border-border/40 grid sm:grid-cols-2 gap-4">
+                <FilterChips label="Department" options={DEPARTMENTS} selected={bizDepartments} onChange={setBizDepartments} disabled={!isActive} />
+                <FilterChips label="Seniority" options={SENIORITIES} selected={bizSeniorities} onChange={setBizSeniorities} disabled={!isActive} />
+              </div>
+              <p className="text-xs text-muted-foreground">Filters apply when no employee name is set.</p>
               <Button onClick={handleBusinessSearch} className="w-full sm:w-auto" disabled={!isActive || loading}>
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />} Find Email
               </Button>
@@ -209,6 +274,11 @@ const Dashboard = () => {
                   <Input placeholder="Acme Inc." value={personCompany} onChange={e => setPersonCompany(e.target.value)} className="bg-muted" />
                 </div>
               </div>
+              <div className="pt-2 border-t border-border/40 grid sm:grid-cols-2 gap-4">
+                <FilterChips label="Department" options={DEPARTMENTS} selected={peopleDepartments} onChange={setPeopleDepartments} disabled={!isActive} />
+                <FilterChips label="Seniority" options={SENIORITIES} selected={peopleSeniorities} onChange={setPeopleSeniorities} disabled={!isActive} />
+              </div>
+              <p className="text-xs text-muted-foreground">Leave name empty to browse a company by filters.</p>
               <Button onClick={handlePeopleSearch} className="w-full sm:w-auto" disabled={!isActive || loading}>
                 {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />} Find Email
               </Button>
@@ -277,7 +347,7 @@ const Dashboard = () => {
                         <div>
                           <p className="text-sm font-medium">{e.email}</p>
                           <p className="text-xs text-muted-foreground">
-                            {[e.firstName, e.lastName].filter(Boolean).join(' ')}{e.position ? ` · ${e.position}` : ''}
+                            {[e.firstName, e.lastName].filter(Boolean).join(' ')}{e.position ? ` · ${e.position}` : ''}{e.department ? ` · ${e.department}` : ''}{e.seniority ? ` · ${e.seniority}` : ''}
                           </p>
                         </div>
                         {typeof e.confidence === 'number' && (
