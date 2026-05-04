@@ -347,7 +347,7 @@ const Dashboard = () => {
                         <div>
                           <p className="text-sm font-medium">{e.email}</p>
                           <p className="text-xs text-muted-foreground">
-                            {[e.firstName, e.lastName].filter(Boolean).join(' ')}{e.position ? ` · ${e.position}` : ''}
+                            {[e.firstName, e.lastName].filter(Boolean).join(' ')}{e.position ? ` · ${e.position}` : ''}{e.department ? ` · ${e.department}` : ''}{e.seniority ? ` · ${e.seniority}` : ''}
                           </p>
                         </div>
                         {typeof e.confidence === 'number' && (
