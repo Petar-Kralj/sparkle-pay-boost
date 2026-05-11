@@ -28,6 +28,7 @@ const Index = () => {
             <span className="text-lg font-bold tracking-tight" style={{ fontFamily: 'Space Grotesk' }}>Fonatica</span>
           </Link>
           <div className="flex items-center gap-3">
+            <Link to="/blog" className="text-sm text-muted-foreground hover:text-foreground hidden sm:inline">Blog</Link>
             {user ? (
               <Link to="/dashboard">
                 <Button size="sm">Dashboard <ArrowRight className="w-3 h-3" /></Button>
