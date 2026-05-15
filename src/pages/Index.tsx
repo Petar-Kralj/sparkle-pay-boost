@@ -70,7 +70,7 @@ const Index = () => {
           </motion.p>
           <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={3}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <a href={STRIPE_PAYMENT_LINK} target="_blank" rel="noopener noreferrer">
+            <a href={WHOP_PAYMENT_LINK} target="_blank" rel="noopener noreferrer">
               <Button size="lg">Subscribe Now <ArrowRight className="w-4 h-4" /></Button>
             </a>
             <Link to="/signup">
@@ -146,7 +146,7 @@ const Index = () => {
                 </li>
               ))}
             </ul>
-            <a href={STRIPE_PAYMENT_LINK} target="_blank" rel="noopener noreferrer" className="block">
+            <a href={WHOP_PAYMENT_LINK} target="_blank" rel="noopener noreferrer" className="block">
               <Button className="w-full" size="lg">Subscribe Now <ArrowRight className="w-4 h-4" /></Button>
             </a>
           </motion.div>

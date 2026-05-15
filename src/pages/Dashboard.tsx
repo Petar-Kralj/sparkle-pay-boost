@@ -212,7 +212,7 @@ const Dashboard = () => {
                 <p className="text-sm text-muted-foreground mb-3">
                   You need an active Pro subscription to use the email finder. Subscribe now to unlock all features.
                 </p>
-                <a href={STRIPE_PAYMENT_LINK} target="_blank" rel="noopener noreferrer">
+                <a href={WHOP_PAYMENT_LINK} target="_blank" rel="noopener noreferrer">
                   <Button size="sm">
                     Subscribe — $125/mo <ArrowRight className="w-3 h-3" />
                   </Button>
