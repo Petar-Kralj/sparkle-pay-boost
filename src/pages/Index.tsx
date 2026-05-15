@@ -5,7 +5,7 @@ import { Mail, Search, Users, Zap, Shield, Globe, ArrowRight, Check, AlertTriang
 import { useAuth } from '@/hooks/useAuth';
 import logo from '@/assets/logo.png';
 
-const STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/8x228r9hRfo73B26C37Zu0c';
+const WHOP_PAYMENT_LINK = 'https://whop.com/checkout/plan_Tn9jjfmgrkF44';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
