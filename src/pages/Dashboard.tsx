@@ -64,6 +64,16 @@ const Dashboard = () => {
   const { isActive, loading: subLoading } = useSubscription();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.title = 'Dashboard — Fonatica';
+    let meta = document.querySelector('meta[name="description"]');
+    if (!meta) { meta = document.createElement('meta'); meta.setAttribute('name', 'description'); document.head.appendChild(meta); }
+    meta.setAttribute('content', 'Your Fonatica dashboard — search and verify business and personal email addresses, run bulk lookups, and export your outreach lists.');
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonical) { canonical = document.createElement('link'); canonical.rel = 'canonical'; document.head.appendChild(canonical); }
+    canonical.href = 'https://sparkle-pay-boost.lovable.app/dashboard';
+  }, []);
+
   const [businessDomain, setBusinessDomain] = useState('');
   const [businessName, setBusinessName] = useState('');
   const [personName, setPersonName] = useState('');
