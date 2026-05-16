@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -15,8 +16,26 @@ const fadeUp = {
   })
 };
 
+const setHead = (title: string, description: string, path: string) => {
+  document.title = title;
+  let meta = document.querySelector('meta[name="description"]');
+  if (!meta) { meta = document.createElement('meta'); meta.setAttribute('name', 'description'); document.head.appendChild(meta); }
+  meta.setAttribute('content', description);
+  let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+  if (!canonical) { canonical = document.createElement('link'); canonical.rel = 'canonical'; document.head.appendChild(canonical); }
+  canonical.href = `https://sparkle-pay-boost.lovable.app${path}`;
+};
+
 const Index = () => {
   const { user } = useAuth();
+
+  useEffect(() => {
+    setHead(
+      'Fonatica — Find verified business & personal email addresses',
+      'Fonatica is a B2B lead generation tool that finds and verifies business and personal email addresses in seconds. Build accurate outreach lists fast.',
+      '/'
+    );
+  }, []);
 
   return (
     <div className="min-h-screen bg-background overflow-hidden">
